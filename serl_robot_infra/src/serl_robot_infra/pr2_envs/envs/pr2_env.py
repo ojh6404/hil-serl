@@ -245,7 +245,6 @@ class PR2Env(gym.Env):
         """
 
         current_pose = obs["state"]["tcp_pose"]
-        print("current_pose:", current_pose)
         # convert from quat to euler first
         current_rot = Rotation.from_quat(current_pose[3:]).as_matrix()
         target_rot = Rotation.from_euler("xyz", self._TARGET_POSE[3:]).as_matrix()
@@ -261,11 +260,12 @@ class PR2Env(gym.Env):
         # Calculate distance: sqrt of sum of squared normalized deltas
         distance = np.linalg.norm(normalized_delta)
 
-        # Convert to reward: reward = exp(-distance)
-        # At target (distance=0): reward=1.0
-        # Far from target: reward→0
-        reward = np.exp(-distance)
-
+        # Tolerance-based linear reward (more interpretable gradients):
+        # distance = 0: reward = 1.0
+        # distance = tolerance: reward = 0.0
+        # Beyond tolerance: reward = 0.0
+        tolerance = 3.0  # distance at which reward becomes 0
+        reward = np.maximum(0.0, 1.0 - distance / tolerance)
         return float(reward)
 
     def get_im(self) -> Dict[str, np.ndarray]:
