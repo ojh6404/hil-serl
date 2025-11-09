@@ -237,13 +237,15 @@ class PR2Env(gym.Env):
         )
         return ob, int(reward), done, False, {"succeed": reward}
 
-    def compute_reward(self, obs) -> bool:
+    def compute_reward(self, obs) -> float:
         """
         Compute the reward for the current state.
-        Default reward is based on the distance between the current pose and the target pose.
+        Dense reward based on distance to target pose, normalized to [0, 1].
+        Closer to target = higher reward (max 1.0 when within threshold).
         """
 
         current_pose = obs["state"]["tcp_pose"]
+        print("current_pose:", current_pose)
         # convert from quat to euler first
         current_rot = Rotation.from_quat(current_pose[3:]).as_matrix()
         target_rot = Rotation.from_euler("xyz", self._TARGET_POSE[3:]).as_matrix()
@@ -252,11 +254,19 @@ class PR2Env(gym.Env):
         delta = np.abs(
             np.hstack([current_pose[:3] - self._TARGET_POSE[:3], diff_euler])
         )
-        if np.all(delta < self._REWARD_THRESHOLD):
-            return True
-        else:
-            # print(f'Goal not reached, the difference is {delta}, the desired threshold is {self._REWARD_THRESHOLD}')
-            return False
+
+        # Normalize delta by threshold (delta/threshold = 0 means at target, >1 means beyond threshold)
+        normalized_delta = delta / self._REWARD_THRESHOLD
+
+        # Calculate distance: sqrt of sum of squared normalized deltas
+        distance = np.linalg.norm(normalized_delta)
+
+        # Convert to reward: reward = exp(-distance)
+        # At target (distance=0): reward=1.0
+        # Far from target: reward→0
+        reward = np.exp(-distance)
+
+        return float(reward)
 
     def get_im(self) -> Dict[str, np.ndarray]:
         """
@@ -501,7 +511,7 @@ if __name__ == "__main__":
     default_config.SERVER_URL = "http://133.11.216.159:5000/"  # Flask server URL
     # default_config.SERVER_URL = "http://127.0.0.1:5000/"  # Flask server URL
     # default_config.TARGET_POSE = np.array([0.80680774,0.1987997,1.02477692, 0, 0, 0.34906585])
-    default_config.TARGET_POSE = np.array([0.72088106, 0.15, 1.14312388, 0.0, 0.0, 0.0])
+    default_config.TARGET_POSE = np.array([0.72043526  0.10875295  1.25475795, 0.0, 0.0, 0.0])
     default_config.GRASP_POSE = np.array([0.5857508505445138,-0.22036261105675414,0.2731021902359492, 0, 0, 0])
     default_config.RESET_POSE = default_config.TARGET_POSE + np.array([-0.3, 0, 0, 0, 0, 0])
     default_config.ABS_POSE_LIMIT_LOW = default_config.TARGET_POSE + np.array([-0.5, -0.4, -0.2, -0.01, -0.1, -0.2])
