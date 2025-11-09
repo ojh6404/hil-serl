@@ -1,11 +1,11 @@
 import copy
 import time
-from serl_robot_infra.pr2_envs.utils.rotations import euler_2_quat
 from scipy.spatial.transform import Rotation as R
 import numpy as np
 import requests
 
-from pr2_envs.envs.pr2_env import PR2Env
+from serl_robot_infra.pr2_envs.envs.pr2_env import PR2Env
+from serl_robot_infra.pr2_envs.utils.rotations import euler_2_quat
 
 class FridgeEnv(PR2Env):
     def __init__(self, **kwargs):
