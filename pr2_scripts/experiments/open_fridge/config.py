@@ -3,24 +3,21 @@ import jax
 import jax.numpy as jnp
 import numpy as np
 
-from pr2_envs.envs.wrappers import (
-    Quat2EulerWrapper,
-    SpacemouseIntervention,
-    MultiCameraBinaryRewardClassifierWrapper,
+from serl_robot_infra.pr2_envs.envs.wrappers import (
     GripperCloseEnv,
-    # DenseTaskRewardWrapper,
+    Quat2EulerWrapper,
+    SparseVLMRewardWrapper,
     # AffordanceWrapper,
     ROSSpacemouseIntervention,
 )
-from pr2_envs.envs.relative_env import RelativeFrame
-from pr2_envs.envs.pr2_env import DefaultEnvConfig
+from serl_robot_infra.pr2_envs.envs.pr2_env import DefaultEnvConfig
 from serl_launcher.wrappers.serl_obs_wrappers import SERLObsWrapper
 from serl_launcher.wrappers.chunking import ChunkingWrapper
-# from serl_launcher.networks.reward_classifier import load_classifier_func
 
 from experiments.config import DefaultTrainingConfig
 from experiments.open_fridge.wrapper import FridgeEnv
 
+DLBOX14_IP = os.environ.get("DLBOX14_IP", "133.11.216.111")
 
 class EnvConfig(DefaultEnvConfig):
     IP = "127.0.0.1"
@@ -110,7 +107,8 @@ class EnvConfig(DefaultEnvConfig):
 class TrainConfig(DefaultTrainingConfig):
     image_keys = ["kinect_head"]
     classifier_keys = ["kinect_head"]
-    proprio_keys = ["tcp_pose", "tcp_vel", "tcp_force", "tcp_torque", "gripper_pose"]
+    # proprio_keys = ["tcp_pose", "tcp_vel", "tcp_force", "tcp_torque", "gripper_pose"]
+    proprio_keys = ["tcp_pose", "gripper_pose"]
     buffer_period = 1000
     checkpoint_period = 5000
     steps_per_update = 50
@@ -123,37 +121,18 @@ class TrainConfig(DefaultTrainingConfig):
             save_video=save_video,
             config=EnvConfig(),
         )
-        # CLIP-based reward wrapper removed for testing
-        # env = DenseTaskRewardWrapper(
-        #     env=env,
-        #     camera_name="kinect_head",
-        #     positive_prompt="a photo of opened refrigerator",
-        #     negative_prompt="a photo of closed refrigerator",
-        #     reward_scale=0.5,
-        #     clip_server_url="http://133.11.216.144:5005/getprob",
-        #     update_interval=0.1,
-        #     history_length= 5,
-        #     min_prob= 0.0,
-        #     max_prob= 0.8,
-        # )
+        env = SparseVLMRewardWrapper(
+            env,
+            prompt="Does fridge in the scene open? Answer yes or no.",
+            camera_name="kinect_head",  # PR2's head-mounted Kinect camera
+            vlm_server_url=f"http://{DLBOX14_IP}:5001/reward",
+            update_interval=0.5,
+            reward_scale=1.0,
+        )
         env = ROSSpacemouseIntervention(env=env)
         # env = AffordanceWrapper(env)
         env = Quat2EulerWrapper(env)
         env = SERLObsWrapper(env, proprio_keys=self.proprio_keys)
         env = ChunkingWrapper(env, obs_horizon=1, act_exec_horizon=None)
 
-        # if classifier:
-        #     classifier = load_classifier_func(
-        #         key=jax.random.PRNGKey(0),
-        #         sample=env.observation_space.sample(),
-        #         image_keys=self.classifier_keys,
-        #         checkpoint_path=os.path.abspath("classifier_ckpt/"),
-        #     )
-
-        #     def reward_func(obs):
-        #         sigmoid = lambda x: 1 / (1 + jnp.exp(-x))
-        #         # added check for z position to further robustify classifier, but should work without as well
-        #         return int(sigmoid(classifier(obs)) > 0.85 and obs['state'][0, 6] > 0.04)
-
-        #     env = MultiCameraBinaryRewardClassifierWrapper(env, reward_func)
         return env
