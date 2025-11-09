@@ -1,6 +1,6 @@
 import multiprocessing
 import numpy as np
-from pr2_envs.spacemouse import pyspacemouse
+from serl_robot_infra.pr2_envs.spacemouse import pyspacemouse
 from typing import Tuple
 
 

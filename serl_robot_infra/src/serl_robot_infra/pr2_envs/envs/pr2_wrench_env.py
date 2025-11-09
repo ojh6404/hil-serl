@@ -13,10 +13,10 @@ import threading
 from datetime import datetime
 from collections import OrderedDict
 
-from pr2_envs.camera.video_capture import VideoCapture
-from pr2_envs.camera.multi_video_capture import MultiVideoCapture
-from pr2_envs.camera.rs_capture import RSCapture
-from pr2_envs.utils.rotations import euler_2_quat, quat_2_euler
+from serl_robot_infra.pr2_envs.camera.video_capture import VideoCapture
+from serl_robot_infra.pr2_envs.camera.multi_video_capture import MultiVideoCapture
+from serl_robot_infra.pr2_envs.camera.rs_capture import RSCapture
+from serl_robot_infra.pr2_envs.utils.rotations import euler_2_quat, quat_2_euler
 
 
 class ImageDisplayer(threading.Thread):

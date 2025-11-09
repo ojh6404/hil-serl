@@ -3,7 +3,7 @@ from scipy.spatial.transform import Rotation as R
 import gymnasium as gym
 import numpy as np
 from gym import Env
-from pr2_envs.utils.transformations import (
+from serl_robot_infra.pr2_envs.utils.transformations import (
     construct_adjoint_matrix,
     construct_homogeneous_matrix,
 )

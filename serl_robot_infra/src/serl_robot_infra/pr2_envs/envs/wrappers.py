@@ -5,17 +5,17 @@ import gymnasium as gym
 import numpy as np
 from gymnasium.spaces import Box
 import copy
-from pr2_envs.spacemouse.spacemouse_expert import SpaceMouseExpert
+from serl_robot_infra.pr2_envs.spacemouse.spacemouse_expert import SpaceMouseExpert
 import requests
 from scipy.spatial.transform import Rotation as R
 from PIL import Image
-from pr2_envs.envs.pr2_env import PR2Env
+from serl_robot_infra.pr2_envs.envs.pr2_env import PR2Env
 import requests
 
 from collections import deque
 
-from pr2_envs.utils.server import pil_to_base64
-from pr2_envs.utils.rotations import euler_2_quat, quat_2_euler
+from serl_robot_infra.pr2_envs.utils.server import pil_to_base64
+from serl_robot_infra.pr2_envs.utils.rotations import euler_2_quat, quat_2_euler
 
 sigmoid = lambda x: 1 / (1 + np.exp(-x))
 

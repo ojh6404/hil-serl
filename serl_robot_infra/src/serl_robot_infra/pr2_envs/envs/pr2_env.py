@@ -14,7 +14,7 @@ import threading
 from datetime import datetime
 from typing import Dict
 
-from pr2_envs.utils.rotations import euler_2_quat, quat_2_euler
+from serl_robot_infra.pr2_envs.utils.rotations import euler_2_quat, quat_2_euler
 
 class ImageDisplayer(threading.Thread):
     def __init__(self, queue, name):
