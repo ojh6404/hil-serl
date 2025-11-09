@@ -7,19 +7,15 @@ In a screen run `python pr2_server_joint_action.py`
 
 from typing import List
 import time
-import subprocess
 import numpy as np
 from scipy.spatial.transform import Rotation as R
 from absl import app, flags
 from flask import Flask, request, jsonify, Response
 
 import rospy
-import tf2_ros
-from std_srvs.srv import Trigger
 from geometry_msgs.msg import PoseStamped, Point, Quaternion
 from sensor_msgs.msg import JointState
 from serl_controllers_msgs.msg import ControllerState
-from dynamic_reconfigure.client import Client as ReconfClient
 from pr2_servers.pr2_gripper_server import (
     PR2GripperServer,
 )
@@ -106,19 +102,7 @@ class PR2Server(object):
         self.reset_joint_target = reset_joint_target
 
         self.control_mode = "joint_action"
-
-        # self.joint_controller = subprocess.Popen(
-        #     [
-        #         "roslaunch",
-        #         self.ros_pkg_name,
-        #         "joint.launch",
-        #     ],
-        #     stdout=subprocess.PIPE,
-        # )
         time.sleep(3)
-
-        # Joint action controller doesn't need impedance services
-        # Services removed: start_impedance, stop_impedance, enable_robot, disable_robot
 
         # Publisher for joint action controller
         self.pub_joint_action_pose_command = rospy.Publisher(
