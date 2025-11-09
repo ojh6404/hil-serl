@@ -29,7 +29,7 @@ class EnvConfig(DefaultEnvConfig):
     IMAGE_CROP = {
         "kinect_head": lambda img: img[80:500, 80:480],
     }
-    TARGET_POSE = np.array([0.72043526  0.10875295  1.25475795, 0, 0, 0])
+    TARGET_POSE = np.array([0.72043526, 0.10875295, 1.25475795, 0, 0, 0])
     GRASP_POSE = np.array([0.5857508505445138,-0.22036261105675414,0.2731021902359492, 0, 0, 0])
     RESET_POSE = TARGET_POSE + np.array([-0.3, 0, 0, 0, 0, 0])
     ABS_POSE_LIMIT_LOW = TARGET_POSE + np.array([-0.45, -0.4, -0.2, -0.01, -0.1, -0.2])
