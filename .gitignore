@@ -75,6 +75,12 @@ Thumbs.db
 videos/
 *.mp4
 *.avi
+*.mov
+*.mkv
+
+# Pickle files
+*.pkl
+*.pickle
 
 # Logs
 *.log
