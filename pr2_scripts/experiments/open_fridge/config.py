@@ -121,15 +121,16 @@ class TrainConfig(DefaultTrainingConfig):
             save_video=save_video,
             config=EnvConfig(),
         )
-        env = SparseVLMRewardWrapper(
-            env,
-            prompt="Does fridge in the scene open? Answer yes or no.",
-            camera_name="kinect_head",  # PR2's head-mounted Kinect camera
-            vlm_server_url=f"http://{DLBOX14_IP}:5001/reward",
-            update_interval=0.5,
-            reward_scale=1.0,
-        )
-        env = ROSSpacemouseIntervention(env=env)
+        if not fake_env:
+            env = SparseVLMRewardWrapper(
+                env,
+                prompt="Does fridge in the scene open? Answer yes or no.",
+                camera_name="kinect_head",  # PR2's head-mounted Kinect camera
+                vlm_server_url=f"http://{DLBOX14_IP}:5001/reward",
+                update_interval=0.5,
+                reward_scale=1.0,
+            )
+            env = ROSSpacemouseIntervention(env=env)
         # env = AffordanceWrapper(env)
         env = Quat2EulerWrapper(env)
         env = SERLObsWrapper(env, proprio_keys=self.proprio_keys)
