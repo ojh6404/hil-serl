@@ -1,2 +1,2 @@
-franka_env
+pr2_servers
 robot_servers
