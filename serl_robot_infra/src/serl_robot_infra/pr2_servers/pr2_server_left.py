@@ -18,13 +18,13 @@ from geometry_msgs.msg import PoseStamped, Point, Quaternion
 from sensor_msgs.msg import JointState
 from serl_controllers_msgs.msg import ControllerState
 from dynamic_reconfigure.client import Client as ReconfClient
-from pr2_servers.pr2_gripper_server_left import (
+from serl_robot_infra.pr2_servers.pr2_gripper_server_left import (
     PR2GripperServer,
 )
 
-from pr2_servers.spacenav_server import SpacenavServer
-from pr2_servers.camera_server import CameraServer
-from pr2_servers.affordance_server import AffordanceServer
+from serl_robot_infra.pr2_servers.spacenav_server import SpacenavServer
+from serl_robot_infra.pr2_servers.camera_server import CameraServer
+from serl_robot_infra.pr2_servers.affordance_server import AffordanceServer
 
 R_ARM_JOINT_NAMES = [
     "r_shoulder_pan_joint",

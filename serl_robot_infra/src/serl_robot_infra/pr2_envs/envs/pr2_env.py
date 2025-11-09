@@ -493,13 +493,13 @@ class PR2Env(gym.Env):
 
 
 if __name__ == "__main__":
-    from pr2_envs.envs.wrappers import ROSSpacemouseIntervention, AffordanceWrapper, Quat2EulerWrapper, SparseVLMRewardWrapper
+    from serl_robot_infra.pr2_envs.envs.wrappers import ROSSpacemouseIntervention, AffordanceWrapper, Quat2EulerWrapper, SparseVLMRewardWrapper
     from serl_launcher.wrappers.serl_obs_wrappers import SERLObsWrapper
     from serl_launcher.wrappers.chunking import ChunkingWrapper
 
     default_config = DefaultEnvConfig()
-    # default_config.SERVER_URL = "http://133.11.216.159:5000/"  # Flask server URL
-    default_config.SERVER_URL = "http://127.0.0.1:5000/"  # Flask server URL
+    default_config.SERVER_URL = "http://133.11.216.159:5000/"  # Flask server URL
+    # default_config.SERVER_URL = "http://127.0.0.1:5000/"  # Flask server URL
     # default_config.TARGET_POSE = np.array([0.80680774,0.1987997,1.02477692, 0, 0, 0.34906585])
     default_config.TARGET_POSE = np.array([0.72088106, 0.15, 1.14312388, 0.0, 0.0, 0.0])
     default_config.GRASP_POSE = np.array([0.5857508505445138,-0.22036261105675414,0.2731021902359492, 0, 0, 0])

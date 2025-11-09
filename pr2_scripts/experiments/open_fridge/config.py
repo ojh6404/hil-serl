@@ -20,7 +20,8 @@ from experiments.open_fridge.wrapper import FridgeEnv
 DLBOX14_IP = os.environ.get("DLBOX14_IP", "133.11.216.111")
 
 class EnvConfig(DefaultEnvConfig):
-    IP = "127.0.0.1"
+    # IP = "127.0.0.1"
+    IP = "133.11.216.159"
     SERVER_URL = f"http://{IP}:5000/"
     CAMERAS = {
         "kinect_head": "/kinect_head/rgb/image_rect_color/compressed",
